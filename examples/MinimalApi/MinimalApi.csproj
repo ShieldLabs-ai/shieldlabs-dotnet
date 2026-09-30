@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MinimalApi</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- In your own app: dotnet add package ShieldLabs -->
+    <ProjectReference Include="..\..\src\ShieldLabs\ShieldLabs.csproj" />
+  </ItemGroup>
+
+</Project>

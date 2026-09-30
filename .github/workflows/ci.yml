@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Build and test (.NET ${{ matrix.dotnet }}, ${{ matrix.label }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dotnet: '8.0.x'
+            tfm: net8.0
+            library: ''
+            label: net8.0 library
+            framework: '.NETCoreApp,Version=v8.0'
+          # The same suite against the netstandard2.0 build of the library.
+          - dotnet: '8.0.x'
+            tfm: net8.0
+            library: netstandard2.0
+            label: netstandard2.0 library
+            framework: '.NETStandard,Version=v2.0'
+          - dotnet: '9.0.x'
+            tfm: net9.0
+            library: ''
+            label: net8.0 library
+            framework: '.NETCoreApp,Version=v8.0'
+          - dotnet: '10.0.x'
+            tfm: net10.0
+            library: ''
+            label: net8.0 library
+            framework: '.NETCoreApp,Version=v8.0'
+    env:
+      TEST_TFM: ${{ matrix.tfm }}
+      TEST_LIBRARY: ${{ matrix.library }}
+      SHIELDLABS_TEST_LIBRARY_FRAMEWORK: ${{ matrix.framework }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+
+      # Builds the library for net8.0 and netstandard2.0, the tests and the example app.
+      - name: Build
+        run: dotnet build -c Release -warnaserror -p:TestTargetFramework="$TEST_TFM" -p:TestLibraryTargetFramework="$TEST_LIBRARY"
+
+      - name: Test
+        run: >-
+          dotnet test -c Release --no-build -p:TestTargetFramework="$TEST_TFM" -p:TestLibraryTargetFramework="$TEST_LIBRARY"
+          --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      - name: Pack
+        if: matrix.tfm == 'net8.0' && matrix.library == ''
+        run: dotnet pack src/ShieldLabs -c Release --no-build -o artifacts
+
+      - name: Upload package
+        if: matrix.tfm == 'net8.0' && matrix.library == ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nuget-package
+          path: artifacts/
+          if-no-files-found: error

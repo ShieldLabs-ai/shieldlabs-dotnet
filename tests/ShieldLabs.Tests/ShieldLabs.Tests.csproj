@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- CI can run the suite on newer runtimes with -p:TestTargetFramework=net10.0 -->
+    <TargetFramework Condition="'$(TestTargetFramework)' == ''">net8.0</TargetFramework>
+    <TargetFramework Condition="'$(TestTargetFramework)' != ''">$(TestTargetFramework)</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>ShieldLabs.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TestLibraryTargetFramework)' == ''">
+    <ProjectReference Include="..\..\src\ShieldLabs\ShieldLabs.csproj" />
+  </ItemGroup>
+
+  <!--
+    CI also runs the suite against the netstandard2.0 build of the library with
+    -p:TestLibraryTargetFramework=netstandard2.0. That build's package dependencies are not
+    restored through the project reference, so they are referenced here.
+  -->
+  <ItemGroup Condition="'$(TestLibraryTargetFramework)' != ''">
+    <ProjectReference Include="..\..\src\ShieldLabs\ShieldLabs.csproj" SetTargetFramework="TargetFramework=$(TestLibraryTargetFramework)" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="data\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

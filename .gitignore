@@ -1,0 +1,27 @@
+# Build output
+bin/
+obj/
+artifacts/
+*.nupkg
+*.snupkg
+
+# Test output and coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+coverage.*.xml
+
+# IDE and OS files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.swp
+.DS_Store
+
+# Local secrets
+.env
+.env.*
+!.env.example

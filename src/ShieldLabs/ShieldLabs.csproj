@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+    <RootNamespace>ShieldLabs</RootNamespace>
+    <AssemblyName>ShieldLabs</AssemblyName>
+    <Version>1.0.0</Version>
+    <IsPackable>true</IsPackable>
+    <PackageId>ShieldLabs</PackageId>
+    <Title>ShieldLabs server SDK for .NET</Title>
+    <Description>Server SDK for ShieldLabs device intelligence and fraud detection: read identification verdicts from the History API, verify signed webhooks, read the domain profile and turn a Risk Score into a decision.</Description>
+    <PackageTags>shieldlabs;fraud-detection;device-intelligence;risk-score;bot-detection;webhooks</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/ShieldLabs-ai/shieldlabs-dotnet</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/ShieldLabs-ai/shieldlabs-dotnet/blob/main/CHANGELOG.md</PackageReleaseNotes>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ShieldLabs.Tests" />
+  </ItemGroup>
+
+</Project>

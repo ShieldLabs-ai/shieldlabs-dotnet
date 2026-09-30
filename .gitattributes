@@ -1,0 +1,4 @@
+* text=auto eol=lf
+
+# Shared test fixtures are compared byte for byte (webhook signatures): never convert line endings.
+tests/ShieldLabs.Tests/data/** -text
