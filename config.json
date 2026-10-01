@@ -1,0 +1,14 @@
+{
+  "packageName": "ShieldLabs.Generated",
+  "packageVersion": "1.0.0",
+  "targetFramework": "net8.0",
+  "netCoreProjectFile": true,
+  "packageAuthors": "ShieldLabs Inc.",
+  "packageCompany": "ShieldLabs Inc.",
+  "packageTitle": "ShieldLabs generated API models",
+  "packageDescription": "Generated from the ShieldLabs OpenAPI description. The supported SDK is the ShieldLabs package.",
+  "packageCopyright": "Copyright (c) 2026 ShieldLabs Inc.",
+  "gitUserId": "ShieldLabs-ai",
+  "gitRepoId": "shieldlabs-dotnet",
+  "hideGenerationTimestamp": true
+}
