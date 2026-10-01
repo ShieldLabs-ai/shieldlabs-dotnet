@@ -11,7 +11,7 @@ package is the server half of an integration. New to ShieldLabs? [Start free](ht
 
 ## How it fits
 
-1. **Browser.** The ShieldLabs agent runs an identification on your page (with `@shieldlabs/js` or a
+1. **Browser.** The ShieldLabs agent runs an identification on your page (with `@shieldlabs-ai/js` or a
    framework binding) and gives the page a `requestId`. The browser never sees a Risk Score.
 2. **Your backend.** The page sends the `requestId` along with the protected action (signup, login,
    checkout). Your backend reads the verdict for it from the History API with this SDK, or receives
