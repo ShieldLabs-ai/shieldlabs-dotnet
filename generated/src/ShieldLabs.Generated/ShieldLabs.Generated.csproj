@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo> <!-- setting GenerateAssemblyInfo to false causes this bug https://github.com/dotnet/project-system/issues/3934 -->
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>ShieldLabs.Generated</AssemblyName>
+    <PackageId>ShieldLabs.Generated</PackageId>
+    <OutputType>Library</OutputType>
+    <Authors>ShieldLabs Inc.</Authors>
+    <Company>ShieldLabs Inc.</Company>
+    <AssemblyTitle>ShieldLabs generated API models</AssemblyTitle>
+    <Description>Generated from the ShieldLabs OpenAPI description. The supported SDK is the ShieldLabs package.</Description>
+    <Copyright>Copyright (c) 2026 ShieldLabs Inc.</Copyright>
+    <RootNamespace>ShieldLabs.Generated</RootNamespace>
+    <Version>1.0.0</Version>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\ShieldLabs.Generated.xml</DocumentationFile>
+    <RepositoryUrl>https://github.com/ShieldLabs-ai/shieldlabs-dotnet.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Minor update</PackageReleaseNotes>
+    <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Condition="'$(TargetFramework)' == 'net8.0'" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Condition="'$(TargetFramework)' == 'net8.0'" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Condition="'$(TargetFramework)' == 'net8.0'" Version="8.0.20" />
+    <PackageReference Include="Microsoft.Net.Http.Headers" Condition="'$(TargetFramework)' == 'net8.0'" Version="8.0.17" />
+  </ItemGroup>
+
+</Project>

@@ -416,6 +416,14 @@ Documentation: [docs.shieldlabs.ai](https://docs.shieldlabs.ai). Support: [conta
 
 ## Development
 
+Refresh the generated client when the API description changes. This does not replace the supported library in this repository.
+
+```bash
+./sync.sh      # download the current OpenAPI description into resources/
+./generate.sh  # rebuild generated/ from that file
+```
+
+
 Requirements: the .NET 8 SDK (or Docker).
 
 ```sh
