@@ -26,7 +26,7 @@ dotnet test -c Release --no-build -p:TestLibraryTargetFramework=netstandard2.0
 |---|---|
 | `src/ShieldLabs` | The package. Public types live at the top level; `Internal/` holds implementation details. |
 | `tests/ShieldLabs.Tests` | xUnit tests with a scripted `HttpMessageHandler` and a virtual clock (no network, no real waits). |
-| `tests/ShieldLabs.Tests/data` | Shared test fixtures that every ShieldLabs server SDK passes. Do not edit them by hand: they change together with the public API. |
+| `tests/ShieldLabs.Tests/data` | Shared test fixtures that every ShieldLabs server SDK passes. Do not edit them by hand: they are synced from `contract/` in shieldlabs-openapi (`contract-sync.json`, `.shieldlabs-contract.lock`, `scripts/sync_contract.py --check` in CI, and the `contract-sync.yml` workflow). |
 | `examples/MinimalApi` | ASP.NET Core example, built in CI. |
 
 ## Guidelines

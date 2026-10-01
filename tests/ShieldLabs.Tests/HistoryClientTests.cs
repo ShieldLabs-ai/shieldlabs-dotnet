@@ -5,7 +5,7 @@ namespace ShieldLabs.Tests;
 
 public class HistoryClientTests
 {
-    private const string DeviceId = "ac7c303d-971b-41d1-8e25-cd5b46b46aed";
+    private const string DeviceId = "d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a";
 
     [Fact]
     public async Task Search_parses_the_history_page_fixture()
@@ -54,10 +54,10 @@ public class HistoryClientTests
     [InlineData(LookupType.Ip, "203.0.113.24", "ip/203.0.113.24")]
     [InlineData(LookupType.UserHid, "9f86d081884c7d659a2feaa0c55ad015", "user_hid/9f86d081884c7d659a2feaa0c55ad015")]
     [InlineData(LookupType.UserHid, "user 42?x=1#frag %", "user_hid/user%2042%3Fx=1%23frag%20%25")]
-    [InlineData(LookupType.VisitorId, "BDE0E249-20D8-4544-838C-ED9A0B6D7A36", "visitor_id/bde0e249-20d8-4544-838c-ed9a0b6d7a36")]
-    [InlineData(LookupType.RequestId, "02f1d973-84db-4156-a7f7-e799e6bf389b", "request_id/02f1d973-84db-4156-a7f7-e799e6bf389b")]
+    [InlineData(LookupType.VisitorId, "E9F1A3B5-C7D9-4E1F-8A3B-5C7D9E1F3A5B", "visitor_id/e9f1a3b5-c7d9-4e1f-8a3b-5c7d9e1f3a5b")]
+    [InlineData(LookupType.RequestId, "a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d", "request_id/a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d")]
     [InlineData(LookupType.SessionId, "00000000-0000-0000-0000-000000000000", "session_id/00000000-0000-0000-0000-000000000000")]
-    [InlineData(LookupType.CookieId, "4449bb58-590c-444c-ae1f-d1ddc768dbdd", "cookie_id/4449bb58-590c-444c-ae1f-d1ddc768dbdd")]
+    [InlineData(LookupType.CookieId, "c7d9e1f3-a5b7-4c9d-ae1f-3a5b7c9d1e3f", "cookie_id/c7d9e1f3-a5b7-4c9d-ae1f-3a5b7c9d1e3f")]
     public async Task Search_builds_the_path_for_every_type(LookupType type, string value, string expectedPath)
     {
         var handler = new FakeHttpHandler().Enqueue(200, Fixtures.Text("history-empty.json"));
@@ -221,11 +221,11 @@ public class HistoryClientTests
     [Theory]
     [InlineData(LookupType.DeviceId, "not-a-uuid")]
     [InlineData(LookupType.DeviceId, "")]
-    [InlineData(LookupType.DeviceId, "ac7c303d971b41d18e25cd5b46b46aed")]
-    [InlineData(LookupType.DeviceId, "{ac7c303d-971b-41d1-8e25-cd5b46b46aed}")]
-    [InlineData(LookupType.DeviceId, "ac7c303d-971b-41d1-8e25-cd5b46b46aed\n")]
-    [InlineData(LookupType.RequestId, "zc7c303d-971b-41d1-8e25-cd5b46b46aed")]
-    [InlineData(LookupType.VisitorId, "ac7c303d-971b-41d1-8e25_cd5b46b46aed")]
+    [InlineData(LookupType.DeviceId, "d8e0f2a4b6c84d0ebf2a4b6c8d0e2f4a")]
+    [InlineData(LookupType.DeviceId, "{d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a}")]
+    [InlineData(LookupType.DeviceId, "d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a\n")]
+    [InlineData(LookupType.RequestId, "z8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a")]
+    [InlineData(LookupType.VisitorId, "d8e0f2a4-b6c8-4d0e-bf2a_4b6c8d0e2f4a")]
     [InlineData(LookupType.Ip, "2001:db8::1")]
     [InlineData(LookupType.Ip, "256.1.1.1")]
     [InlineData(LookupType.Ip, "1.2.3")]
@@ -406,7 +406,7 @@ public class HistoryClientTests
             .Enqueue(200, "<html>proxy</html>", "text/html")
             .Enqueue(200, "[]")
             .Enqueue(200, "{\"total\":3}")
-            .Enqueue(200, "{\"data\":[{\"request_id\":\"02f1d973-84db-4156-a7f7-e799e6bf389b\"},\"junk\",1]}");
+            .Enqueue(200, "{\"data\":[{\"request_id\":\"a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d\"},\"junk\",1]}");
         var client = TestClients.History(handler);
 
         var notJson = await Assert.ThrowsAsync<ApiException>(() => client.History.SearchAsync(LookupType.DeviceId, DeviceId));
@@ -419,7 +419,7 @@ public class HistoryClientTests
         Assert.Equal(3, noData.Total);
 
         var noTotal = await client.History.SearchAsync(LookupType.DeviceId, DeviceId);
-        Assert.Equal("02f1d973-84db-4156-a7f7-e799e6bf389b", Assert.Single(noTotal.Data).RequestId);
+        Assert.Equal("a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d", Assert.Single(noTotal.Data).RequestId);
         Assert.Equal(1, noTotal.Total);
     }
 }

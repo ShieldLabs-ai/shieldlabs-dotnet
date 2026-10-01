@@ -5,7 +5,7 @@ namespace ShieldLabs.Tests;
 
 public class IdentificationsTests
 {
-    private const string RequestId = "02f1d973-84db-4156-a7f7-e799e6bf389b";
+    private const string RequestId = "a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d";
     private const string TooManyRequests = "{\"error\":\"too many requests\"}\n";
     private const string ServerBusy = "{\"error\":\"server is busy\"}";
 

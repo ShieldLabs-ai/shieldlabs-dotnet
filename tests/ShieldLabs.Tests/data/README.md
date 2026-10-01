@@ -4,6 +4,8 @@ Shared test fixtures that every ShieldLabs server SDK passes: the same files in 
 SDKs produce the same results. Do not edit them by hand: they are updated together with the public
 API.
 
+They come from `contract/` in [shieldlabs-openapi](https://github.com/ShieldLabs-ai/shieldlabs-openapi/tree/main/contract): `contract-sync.json` maps each file, `.shieldlabs-contract.lock` records the release they come from, CI runs `python3 scripts/sync_contract.py --check`, and the `contract-sync.yml` workflow opens a pull request when a new release changes them.
+
 | File | What the tests check |
 |---|---|
 | `history-page.json`, `history-empty.json` | History API response bodies: five realistic rows, and an empty page |

@@ -1,0 +1,20 @@
+{
+  "source": "shieldlabs-openapi",
+  "files": {
+    "error-responses.json": "tests/ShieldLabs.Tests/data/error-responses.json",
+    "history-empty.json": "tests/ShieldLabs.Tests/data/history-empty.json",
+    "history-page.json": "tests/ShieldLabs.Tests/data/history-page.json",
+    "management-profile-expected.json": "tests/ShieldLabs.Tests/data/management-profile-expected.json",
+    "management-profile.json": "tests/ShieldLabs.Tests/data/management-profile.json",
+    "normalization-cases.json": "tests/ShieldLabs.Tests/data/normalization-cases.json",
+    "risk-band-cases.json": "tests/ShieldLabs.Tests/data/risk-band-cases.json",
+    "signal-slug-cases.json": "tests/ShieldLabs.Tests/data/signal-slug-cases.json",
+    "webhook-identification-scored.json": "tests/ShieldLabs.Tests/data/webhook-identification-scored.json",
+    "webhook-identification-scored.raw.txt": "tests/ShieldLabs.Tests/data/webhook-identification-scored.raw.txt",
+    "webhook-ping.json": "tests/ShieldLabs.Tests/data/webhook-ping.json",
+    "webhook-ping.raw.txt": "tests/ShieldLabs.Tests/data/webhook-ping.raw.txt",
+    "webhook-rate-limited.json": "tests/ShieldLabs.Tests/data/webhook-rate-limited.json",
+    "webhook-signature-vectors.json": "tests/ShieldLabs.Tests/data/webhook-signature-vectors.json",
+    "webhook-test-delivery.json": "tests/ShieldLabs.Tests/data/webhook-test-delivery.json"
+  }
+}

@@ -55,7 +55,7 @@ public class NormalizationTests
     [Fact]
     public void History_raw_keeps_diagnostic_fields()
     {
-        var identification = Normalizer.FromHistoryRow(Fixtures.NormalizationCase("history_02f1d973").GetProperty("input"));
+        var identification = Normalizer.FromHistoryRow(Fixtures.NormalizationCase("history_a5b7c9d1").GetProperty("input"));
 
         Assert.Equal(1790771696123, identification.Raw.GetProperty("ver").GetInt64());
         Assert.Equal("Paid Search", identification.Raw.GetProperty("traffic_channel_group").GetString());
@@ -189,7 +189,7 @@ public class NormalizationTests
     {
         var data = JsonDocument.Parse("""
             {
-              "request_id": "02f1d973-84db-4156-a7f7-e799e6bf389b",
+              "request_id": "a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d",
               "user_hid": "",
               "public_ip": "not an object",
               "local_ip": { "ip": "0.0.0.0", "country": "Germany" },

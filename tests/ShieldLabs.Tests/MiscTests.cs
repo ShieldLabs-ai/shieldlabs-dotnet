@@ -107,7 +107,7 @@ public class ModelTests
     [Fact]
     public void Timestamps_serialize_as_utc_milliseconds_with_z()
     {
-        var history = Normalizer.FromHistoryRow(Fixtures.NormalizationCase("history_02f1d973").GetProperty("input"));
+        var history = Normalizer.FromHistoryRow(Fixtures.NormalizationCase("history_a5b7c9d1").GetProperty("input"));
         Assert.Contains("\"observed_at\":\"2026-09-30T12:34:56.123Z\"", JsonSerializer.Serialize(history));
 
         var profile = ManagementClient.ParseProfile(Fixtures.Bytes("management-profile.json"));

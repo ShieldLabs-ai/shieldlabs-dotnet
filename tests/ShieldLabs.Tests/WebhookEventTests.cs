@@ -113,11 +113,11 @@ public class WebhookEventTests
     [Fact]
     public void Scored_event_with_future_schema_version_still_parses()
     {
-        var body = Encoding.UTF8.GetBytes("{\"event_type\":\"identification.scored\",\"schema_version\":\"2030-01-01\",\"data\":{\"request_id\":\"02f1d973-84db-4156-a7f7-e799e6bf389b\",\"new_field\":1}}");
+        var body = Encoding.UTF8.GetBytes("{\"event_type\":\"identification.scored\",\"schema_version\":\"2030-01-01\",\"data\":{\"request_id\":\"a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d\",\"new_field\":1}}");
 
         var scored = Assert.IsType<IdentificationScoredEvent>(WebhookEvents.ConstructEvent(body, Header(body), Secret));
 
-        Assert.Equal("02f1d973-84db-4156-a7f7-e799e6bf389b", scored.Data.RequestId);
+        Assert.Equal("a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d", scored.Data.RequestId);
         Assert.Equal(DateTimeOffset.MinValue, scored.CreatedAt);
         Assert.Equal(1, scored.Data.Raw.GetProperty("new_field").GetInt32());
     }

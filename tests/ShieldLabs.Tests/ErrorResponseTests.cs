@@ -44,7 +44,7 @@ public class ErrorResponseTests
         var time = new FakeTime();
 
         Func<Task> call = surface == "history"
-            ? () => TestClients.History(handler, time, MaxRetries).History.SearchAsync(LookupType.RequestId, "02f1d973-84db-4156-a7f7-e799e6bf389b")
+            ? () => TestClients.History(handler, time, MaxRetries).History.SearchAsync(LookupType.RequestId, "a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d")
             : () => TestClients.Management(handler, time, MaxRetries).GetProfileAsync();
 
         var error = await Assert.ThrowsAnyAsync<ApiException>(call);

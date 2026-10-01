@@ -68,13 +68,13 @@ public class UnpairedSurrogateTests
     [Fact]
     public async Task History_row_with_unpaired_surrogates_parses()
     {
-        var row = "{\"request_id\":\"02f1d973-84db-4156-a7f7-e799e6bf389b\",\"user_hid\":" + LoneSurrogate
+        var row = "{\"request_id\":\"a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d\",\"user_hid\":" + LoneSurrogate
             + ",\"connection_type\":" + LoneSurrogate + ",\"webrtc_leak_source\":" + LoneSurrogate
             + ",\"score\":10,\"score_details\":\"[{\\\"Value\\\":10,\\\"Description\\\":\\\"\\\\ud800 check\\\"}]\""
             + ",\"created_at\":\"2026-09-30 13:20:30.250\"}";
         var handler = new FakeHttpHandler().Enqueue(200, TestClients.Page(new[] { row }, 1));
 
-        var page = await TestClients.History(handler).History.SearchAsync(LookupType.RequestId, "02f1d973-84db-4156-a7f7-e799e6bf389b");
+        var page = await TestClients.History(handler).History.SearchAsync(LookupType.RequestId, "a5b7c9d1-e3f5-4a7b-9c1d-3e5f7a9b1c3d");
 
         var identification = Assert.Single(page.Data);
         Assert.Equal("\\ud800", identification.UserHid);

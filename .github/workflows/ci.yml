@@ -70,3 +70,13 @@ jobs:
           name: nuget-package
           path: artifacts/
           if-no-files-found: error
+
+  contract:
+    name: Shared contract files match the lock
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          persist-credentials: false
+      - name: Contract files match .shieldlabs-contract.lock
+        run: python3 scripts/sync_contract.py --check

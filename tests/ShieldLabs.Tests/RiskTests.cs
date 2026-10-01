@@ -160,7 +160,7 @@ public class RiskTests
     [Fact]
     public void Dangerous_band_is_refused_by_default()
     {
-        var identification = Normalizer.FromHistoryRow(Fixtures.NormalizationCase("history_02f1d973").GetProperty("input"));
+        var identification = Normalizer.FromHistoryRow(Fixtures.NormalizationCase("history_a5b7c9d1").GetProperty("input"));
 
         var evaluation = Risk.Evaluate(identification, new EvaluateOptions { Now = identification.ObservedAt.AddSeconds(30) });
 

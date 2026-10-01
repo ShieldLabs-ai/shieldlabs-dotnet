@@ -52,7 +52,7 @@ public class HistoryIteratorTests
     {
         var handler = new FakeHttpHandler().Always(200, Fixtures.Text("history-page.json"));
 
-        var ids = await Collect(TestClients.History(handler).History.IterateAsync(LookupType.DeviceId, "ac7c303d-971b-41d1-8e25-cd5b46b46aed", new HistoryIterateOptions { MaxItems = 3 }));
+        var ids = await Collect(TestClients.History(handler).History.IterateAsync(LookupType.DeviceId, "d8e0f2a4-b6c8-4d0e-bf2a-4b6c8d0e2f4a", new HistoryIterateOptions { MaxItems = 3 }));
 
         Assert.Equal(3, ids.Count);
         Assert.Equal("?limit=100&offset=0", Assert.Single(handler.Requests).Uri.Query);
