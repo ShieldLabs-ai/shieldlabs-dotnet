@@ -8,7 +8,10 @@ All notable changes to this package are documented here. The format is based on
 
 ### Added
 
-- `sync.sh` downloads the OpenAPI description and `generate.sh` rebuilds `generated/` from it. The supported client is unchanged.
+- The supported client's History, profile, webhook and request readers now consume a reproducible
+  typed wire contract generated from OpenAPI. Public models and tolerant parsing are unchanged.
+- Generation freshness, incompatible schema mutation compilation and fresh NuGet consumer checks
+  run in CI and release builds. `sync.sh` and `generate.sh` also maintain the stock client reference.
 
 ## [1.0.0] - 2026-09-30
 

@@ -3,6 +3,8 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+python3 scripts/generate-wire.py
+
 if ! docker info >/dev/null 2>&1; then
   echo "Docker is not running. Start Docker and run this script again." >&2
   exit 1
