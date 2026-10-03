@@ -63,6 +63,10 @@ jobs:
         if: matrix.tfm == 'net8.0' && matrix.library == ''
         run: dotnet pack src/ShieldLabs -c Release --no-build -o artifacts
 
+      - name: Test installed package in a fresh consumer
+        if: matrix.tfm == 'net8.0' && matrix.library == ''
+        run: python3 scripts/check-package.py
+
       - name: Upload package
         if: matrix.tfm == 'net8.0' && matrix.library == ''
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -79,6 +83,15 @@ jobs:
         with:
           persist-credentials: false
       - name: Rebuild generated files
-        run: ./generate.sh
+        run: |
+          python3 -m pip install -r scripts/requirements.txt
+          ./generate.sh
       - name: Fail if generated files drifted
-        run: git diff --exit-code
+        run: |
+          python3 scripts/generate-wire.py --check
+          git diff --exit-code
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5.4.0
+        with:
+          dotnet-version: '8.0.x'
+      - name: Reject incompatible schema mutations
+        run: python3 scripts/check-wire-drift.py

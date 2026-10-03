@@ -29,7 +29,40 @@ dotnet test -c Release --no-build -p:TestLibraryTargetFramework=netstandard2.0
 | `tests/ShieldLabs.Tests/data` | Shared test fixtures that every ShieldLabs server SDK passes. Do not edit them by hand: they change together with the public API. |
 | `examples/MinimalApi` | ASP.NET Core example, built in CI. |
 
-## Guidelines
+## Updating the API contract
+
+Install Python 3.10+ and `python3 -m pip install -r scripts/requirements.txt`. After updating
+`resources/shieldlabs-api.yaml`, run `python3 scripts/generate-wire.py`, build and run the suite.
+The generator emits typed field descriptors, not a hash of the description. The supported
+normalizer and clients pass explicit expected types to `Wire.Read<T>` and `Wire.Parameter<T>`;
+a removed field or incompatible type therefore fails compilation of the real source. Request
+enum values and operation response fields also come from the description. Keep string enums
+open in responses and preserve raw JSON and existing malformed-value fallbacks.
+
+Before submitting, run:
+
+```sh
+python3 scripts/generate-wire.py --check
+python3 scripts/check-wire-drift.py
+dotnet pack src/ShieldLabs -c Release -o artifacts
+python3 scripts/check-package.py
+```
+
+Both check scripts accept `--docker` to use the installed .NET 8 image instead of a local SDK.
+Mutation checks work on an isolated source copy, require C# compiler errors or an explicit
+unsupported-contract rejection for incompatible changes, and verify optional additive fields
+and parameters still compile. Route changes, moved known parameters and unknown required
+parameters fail generation until the hand-maintained transport is updated. Optional new
+parameters are not sent by default. The shared webhook envelope reader also requires the same
+common string fields in the scored and ping schemas. The package check restores the
+new archive from a local feed into a fresh consumer with an empty package cache. Its synthetic
+HTTP handler and signed webhook exercise only the package's public API; no API keys or network
+requests are used. CI and release builds run these checks as well.
+
+`./generate.sh` also refreshes the stock generator reference under `generated/`. It is not linked
+into the supported package because its strict deserialization and target differ from the SDK.
+
+## Coding guidelines
 
 - Keep the public API small and documented: every public member has XML documentation.
 - New behaviour needs tests. Use the fixtures for anything that touches the wire format.

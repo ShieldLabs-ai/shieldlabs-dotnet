@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -81,7 +80,7 @@ public sealed class ManagementClient
             httpClient ?? DefaultHttp.Instance,
             ApiSurface.Management,
             secretKey,
-            new[] { new KeyValuePair<string, string>("X-Shield-Domain", Domain) },
+            new[] { Wire.Parameter<string>(WireGetDomainProfileParameters.XShieldDomain, Domain) },
             options.Timeout,
             options.MaxRetries,
             time);
@@ -122,11 +121,11 @@ public sealed class ManagementClient
         {
             return new DomainProfile
             {
-                Domain = JsonUtil.AsString(JsonUtil.Get(root, "Domain")),
-                RemainingIdentifications = JsonUtil.AsLong(JsonUtil.Get(root, "Weight")),
-                PublicKeyMasked = JsonUtil.AsString(JsonUtil.Get(root, "PublicKey")),
-                SecretKeyMasked = JsonUtil.AsString(JsonUtil.Get(root, "Secret")),
-                CreatedAt = Timestamps.ParseRfc3339(JsonUtil.StringOrNull(JsonUtil.Get(root, "CreatedAt"))),
+                Domain = JsonUtil.AsString(Wire.Read<string>(root, WireGetDomainProfileResponse.Domain)),
+                RemainingIdentifications = JsonUtil.AsLong(Wire.Read<long>(root, WireGetDomainProfileResponse.Weight)),
+                PublicKeyMasked = JsonUtil.AsString(Wire.Read<string>(root, WireGetDomainProfileResponse.PublicKey)),
+                SecretKeyMasked = JsonUtil.AsString(Wire.Read<string>(root, WireGetDomainProfileResponse.Secret)),
+                CreatedAt = Timestamps.ParseRfc3339(JsonUtil.StringOrNull(Wire.Read<string>(root, WireGetDomainProfileResponse.CreatedAt))),
                 Raw = root,
             };
         }

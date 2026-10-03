@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NuGetAudit>false</NuGetAudit>
+    <SdkPackageVersion Condition="'$(SdkPackageVersion)' == ''">1.0.0</SdkPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ShieldLabs" Version="$(SdkPackageVersion)" />
+  </ItemGroup>
+</Project>

@@ -47,25 +47,48 @@ internal static class Normalizer
     };
 
     // Normalized flag name -> History row column.
-    private static readonly Dictionary<string, string> HistoryFlagColumns = new Dictionary<string, string>(StringComparer.Ordinal)
+    private static readonly Dictionary<string, WireField<bool>> HistoryFlagColumns = new Dictionary<string, WireField<bool>>(StringComparer.Ordinal)
     {
-        [DetectionFlagNames.Vpn] = "is_vpn",
-        [DetectionFlagNames.PrivacyRelay] = "is_privacy_relay",
-        [DetectionFlagNames.Tor] = "is_tor",
-        [DetectionFlagNames.Proxy] = "is_proxy",
-        [DetectionFlagNames.DatacenterIp] = "is_datacenter",
-        [DetectionFlagNames.Abuser] = "is_abuser",
-        [DetectionFlagNames.OsMismatch] = "is_os_mismatch",
-        [DetectionFlagNames.OsNotDetected] = "is_os_not_detected",
-        [DetectionFlagNames.TimezoneMismatch] = "is_timezone_mismatch",
-        [DetectionFlagNames.AntiDetectBrowser] = "is_antidetect",
-        [DetectionFlagNames.BrowserAutomation] = "is_browser_automation",
-        [DetectionFlagNames.Incognito] = "is_incognito",
-        [DetectionFlagNames.SearchBot] = "is_search_bot",
-        [DetectionFlagNames.SuspiciousPaidClick] = "is_suspicious_paid_click",
-        [DetectionFlagNames.JavascriptDisabled] = "is_js_disabled",
-        [DetectionFlagNames.StunNotChecked] = "is_stun_not_checked",
-        [DetectionFlagNames.CheckIncomplete] = "check_incomplete",
+        [DetectionFlagNames.Vpn] = WireHistoryRow.IsVpn,
+        [DetectionFlagNames.PrivacyRelay] = WireHistoryRow.IsPrivacyRelay,
+        [DetectionFlagNames.Tor] = WireHistoryRow.IsTor,
+        [DetectionFlagNames.Proxy] = WireHistoryRow.IsProxy,
+        [DetectionFlagNames.DatacenterIp] = WireHistoryRow.IsDatacenter,
+        [DetectionFlagNames.Abuser] = WireHistoryRow.IsAbuser,
+        [DetectionFlagNames.OsMismatch] = WireHistoryRow.IsOsMismatch,
+        [DetectionFlagNames.OsNotDetected] = WireHistoryRow.IsOsNotDetected,
+        [DetectionFlagNames.TimezoneMismatch] = WireHistoryRow.IsTimezoneMismatch,
+        [DetectionFlagNames.AntiDetectBrowser] = WireHistoryRow.IsAntidetect,
+        [DetectionFlagNames.BrowserAutomation] = WireHistoryRow.IsBrowserAutomation,
+        [DetectionFlagNames.Incognito] = WireHistoryRow.IsIncognito,
+        [DetectionFlagNames.SearchBot] = WireHistoryRow.IsSearchBot,
+        [DetectionFlagNames.SuspiciousPaidClick] = WireHistoryRow.IsSuspiciousPaidClick,
+        [DetectionFlagNames.JavascriptDisabled] = WireHistoryRow.IsJsDisabled,
+        [DetectionFlagNames.StunNotChecked] = WireHistoryRow.IsStunNotChecked,
+        [DetectionFlagNames.CheckIncomplete] = WireHistoryRow.CheckIncomplete,
+    };
+
+    private static readonly Dictionary<string, WireField<bool>> WebhookFlagColumns = new Dictionary<string, WireField<bool>>(StringComparer.Ordinal)
+    {
+        [DetectionFlagNames.Vpn] = WireDetectionFlags.Vpn,
+        [DetectionFlagNames.PrivacyRelay] = WireDetectionFlags.PrivacyRelay,
+        [DetectionFlagNames.BrowserVpnProxy] = WireDetectionFlags.BrowserVpnProxy,
+        [DetectionFlagNames.Tor] = WireDetectionFlags.Tor,
+        [DetectionFlagNames.Proxy] = WireDetectionFlags.Proxy,
+        [DetectionFlagNames.DatacenterIp] = WireDetectionFlags.DatacenterIp,
+        [DetectionFlagNames.Abuser] = WireDetectionFlags.Abuser,
+        [DetectionFlagNames.OsMismatch] = WireDetectionFlags.OsMismatch,
+        [DetectionFlagNames.OsNotDetected] = WireDetectionFlags.OsNotDetected,
+        [DetectionFlagNames.TimezoneMismatch] = WireDetectionFlags.TimezoneMismatch,
+        [DetectionFlagNames.AntiDetectBrowser] = WireDetectionFlags.AntiDetectBrowser,
+        [DetectionFlagNames.BrowserAutomation] = WireDetectionFlags.BrowserAutomation,
+        [DetectionFlagNames.IpMismatch] = WireDetectionFlags.IpMismatch,
+        [DetectionFlagNames.Incognito] = WireDetectionFlags.Incognito,
+        [DetectionFlagNames.SearchBot] = WireDetectionFlags.SearchBot,
+        [DetectionFlagNames.SuspiciousPaidClick] = WireDetectionFlags.SuspiciousPaidClick,
+        [DetectionFlagNames.JavascriptDisabled] = WireDetectionFlags.JavascriptDisabled,
+        [DetectionFlagNames.StunNotChecked] = WireDetectionFlags.StunNotChecked,
+        [DetectionFlagNames.CheckIncomplete] = WireDetectionFlags.CheckIncomplete,
     };
 
     /// <summary>
@@ -151,40 +174,40 @@ internal static class Normalizer
     /// <summary>Normalizes one History API row.</summary>
     internal static Identification FromHistoryRow(JsonElement row)
     {
-        var leakSource = PyText.Strip(JsonUtil.StringOrEmpty(JsonUtil.Get(row, "webrtc_leak_source")));
+        var leakSource = PyText.Strip(JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.WebrtcLeakSource)));
         string localIp;
         string localCountry;
         if (leakSource.Length > 0 && leakSource != "none")
         {
-            localIp = Ip(JsonUtil.Get(row, "webrtc_leak_ip"));
-            localCountry = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "webrtc_leak_country"));
+            localIp = Ip(Wire.Read<string>(row, WireHistoryRow.WebrtcLeakIp));
+            localCountry = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.WebrtcLeakCountry));
         }
         else
         {
-            localIp = Ip(JsonUtil.Get(row, "web_rtc_ip"));
-            localCountry = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "web_rtc_country"));
+            localIp = Ip(Wire.Read<string>(row, WireHistoryRow.WebRtcIp));
+            localCountry = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.WebRtcCountry));
         }
 
-        var publicIp = Ip(JsonUtil.Get(row, "ip"));
+        var publicIp = Ip(Wire.Read<string>(row, WireHistoryRow.Ip));
 
         var signals = new List<Signal>();
         var ipLeakDetail = false;
-        foreach (var detail in ScoreDetails(JsonUtil.Get(row, "score_details")))
+        foreach (var detail in ScoreDetails(Wire.Read<string>(row, WireHistoryRow.ScoreDetails)))
         {
             if (detail.ValueKind != JsonValueKind.Object)
             {
                 continue;
             }
 
-            var description = JsonUtil.Truthy(JsonUtil.Get(detail, "Description"))
-                ? JsonUtil.StringOrNull(JsonUtil.Get(detail, "Description")) ?? string.Empty
+            var description = JsonUtil.Truthy(Wire.Read<string>(detail, WireScoreDetail.Description))
+                ? JsonUtil.StringOrNull(Wire.Read<string>(detail, WireScoreDetail.Description)) ?? string.Empty
                 : string.Empty;
             if (description.StartsWith(IpLeakPrefix, StringComparison.Ordinal))
             {
                 ipLeakDetail = true;
             }
 
-            if (!JsonUtil.TryGetExactInt(JsonUtil.Get(detail, "Value"), out var weight) || weight == 0)
+            if (!JsonUtil.TryGetExactInt(Wire.Read<long>(detail, WireScoreDetail.Value), out var weight) || weight == 0)
             {
                 continue;
             }
@@ -192,14 +215,14 @@ internal static class Normalizer
             signals.Add(new Signal { Name = SignalSlug(description), Weight = weight, Description = description });
         }
 
-        var searchBot = JsonUtil.Truthy(JsonUtil.Get(row, "is_search_bot"));
-        var connectionType = JsonUtil.AsString(JsonUtil.Get(row, "connection_type"));
+        var searchBot = JsonUtil.Truthy(Wire.Read<bool>(row, WireHistoryRow.IsSearchBot));
+        var connectionType = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.ConnectionType));
         var flags = new Dictionary<string, bool>(StringComparer.Ordinal);
         foreach (var name in DetectionFlagNames.All)
         {
             if (name == DetectionFlagNames.BrowserVpnProxy)
             {
-                flags[name] = IsExactString(JsonUtil.Get(row, "connection_type"), ConnectionTypes.BrowserVpnProxy);
+                flags[name] = IsExactString(Wire.Read<string>(row, WireHistoryRow.ConnectionType), ConnectionTypes.BrowserVpnProxy);
             }
             else if (name == DetectionFlagNames.IpMismatch)
             {
@@ -208,44 +231,44 @@ internal static class Normalizer
             }
             else
             {
-                flags[name] = JsonUtil.Truthy(JsonUtil.Get(row, HistoryFlagColumns[name]));
+                flags[name] = JsonUtil.Truthy(Wire.Read<bool>(row, HistoryFlagColumns[name]));
             }
         }
 
-        var siteDomain = JsonUtil.Get(row, "site_domain");
-        var domain = JsonUtil.Truthy(siteDomain) ? JsonUtil.AsString(siteDomain) : JsonUtil.AsString(JsonUtil.Get(row, "domain"));
+        var siteDomain = Wire.Read<string>(row, WireHistoryRow.SiteDomain);
+        var domain = JsonUtil.Truthy(siteDomain) ? JsonUtil.AsString(siteDomain) : JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.Domain));
 
         return new Identification
         {
-            RequestId = JsonUtil.AsString(JsonUtil.Get(row, "request_id")),
-            VisitorId = JsonUtil.AsString(JsonUtil.Get(row, "visitor_id")),
-            DeviceId = JsonUtil.AsString(JsonUtil.Get(row, "device_id")),
-            SessionId = JsonUtil.AsString(JsonUtil.Get(row, "session_id")),
-            CookieId = JsonUtil.AsString(JsonUtil.Get(row, "cookie_id")),
-            UserHid = UserHid(JsonUtil.Get(row, "user_hid")),
+            RequestId = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.RequestId)),
+            VisitorId = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.VisitorId)),
+            DeviceId = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.DeviceId)),
+            SessionId = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.SessionId)),
+            CookieId = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.CookieId)),
+            UserHid = UserHid(Wire.Read<string>(row, WireHistoryRow.UserHid)),
             Domain = domain,
-            PublicIp = new IpInfo { Ip = publicIp, Country = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "country")) },
+            PublicIp = new IpInfo { Ip = publicIp, Country = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.Country)) },
             LocalIp = new IpInfo { Ip = localIp, Country = localCountry },
             ConnectionType = connectionType,
-            Os = JsonUtil.AsString(JsonUtil.Get(row, "os")),
-            Browser = JsonUtil.AsString(JsonUtil.Get(row, "browser")),
-            DeviceType = JsonUtil.AsString(JsonUtil.Get(row, "device_type")),
+            Os = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.Os)),
+            Browser = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.Browser)),
+            DeviceType = JsonUtil.AsString(Wire.Read<string>(row, WireHistoryRow.DeviceType)),
             TrafficSource = new TrafficSource
             {
-                Channel = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "traffic_channel")),
-                ReferrerDomain = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "referrer_domain")),
-                LandingUrl = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "entry_url")),
-                ClickIdType = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "click_id_type")),
-                UtmSource = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "utm_source")),
-                UtmMedium = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "utm_medium")),
-                UtmCampaign = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "utm_campaign")),
-                UtmContent = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "utm_content")),
-                UtmTerm = JsonUtil.StringOrEmpty(JsonUtil.Get(row, "utm_term")),
+                Channel = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.TrafficChannel)),
+                ReferrerDomain = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.ReferrerDomain)),
+                LandingUrl = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.EntryUrl)),
+                ClickIdType = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.ClickIdType)),
+                UtmSource = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.UtmSource)),
+                UtmMedium = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.UtmMedium)),
+                UtmCampaign = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.UtmCampaign)),
+                UtmContent = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.UtmContent)),
+                UtmTerm = JsonUtil.StringOrEmpty(Wire.Read<string>(row, WireHistoryRow.UtmTerm)),
             },
-            RiskScore = JsonUtil.AsInt(JsonUtil.Get(row, "score")),
+            RiskScore = JsonUtil.AsInt(Wire.Read<long>(row, WireHistoryRow.Score)),
             Signals = signals,
             DetectionFlags = BuildFlags(flags),
-            ObservedAt = Timestamps.ParseHistory(JsonUtil.StringOrNull(JsonUtil.Get(row, "created_at"))) ?? DateTimeOffset.MinValue,
+            ObservedAt = Timestamps.ParseHistory(JsonUtil.StringOrNull(Wire.Read<string>(row, WireHistoryRow.CreatedAt))) ?? DateTimeOffset.MinValue,
             Source = IdentificationSource.History,
             Raw = row,
         };
@@ -254,16 +277,16 @@ internal static class Normalizer
     /// <summary>Normalizes the <c>data</c> object of an <c>identification.scored</c> webhook.</summary>
     internal static Identification FromWebhookData(JsonElement data)
     {
-        var flagsObject = JsonUtil.Get(data, "detection_flags");
+        var flagsObject = Wire.Read<WireDetectionFlags>(data, WireIdentificationScoredData.DetectionFlags);
         var flags = new Dictionary<string, bool>(StringComparer.Ordinal);
         foreach (var name in DetectionFlagNames.All)
         {
-            flags[name] = flagsObject is JsonElement f && f.ValueKind == JsonValueKind.Object && JsonUtil.Truthy(JsonUtil.Get(f, name));
+            flags[name] = flagsObject is JsonElement f && f.ValueKind == JsonValueKind.Object && JsonUtil.Truthy(Wire.Read<bool>(f, WebhookFlagColumns[name]));
         }
 
-        var traffic = JsonUtil.Get(data, "traffic_source") ?? default;
+        var traffic = Wire.Read<WireTrafficSource>(data, WireIdentificationScoredData.TrafficSource) ?? default;
         var signals = new List<Signal>();
-        if (JsonUtil.Get(data, "signals") is JsonElement signalArray && signalArray.ValueKind == JsonValueKind.Array)
+        if (Wire.Read<WireArray<WireSignal>>(data, WireIdentificationScoredData.Signals) is JsonElement signalArray && signalArray.ValueKind == JsonValueKind.Array)
         {
             foreach (var item in signalArray.EnumerateArray())
             {
@@ -274,8 +297,8 @@ internal static class Normalizer
 
                 signals.Add(new Signal
                 {
-                    Name = JsonUtil.AsString(JsonUtil.Get(item, "name")),
-                    Weight = JsonUtil.AsInt(JsonUtil.Get(item, "weight")),
+                    Name = JsonUtil.AsString(Wire.Read<string>(item, WireSignal.Name)),
+                    Weight = JsonUtil.AsInt(Wire.Read<long>(item, WireSignal.Weight)),
                     Description = null,
                 });
             }
@@ -283,35 +306,35 @@ internal static class Normalizer
 
         return new Identification
         {
-            RequestId = JsonUtil.AsString(JsonUtil.Get(data, "request_id")),
-            VisitorId = JsonUtil.AsString(JsonUtil.Get(data, "visitor_id")),
-            DeviceId = JsonUtil.AsString(JsonUtil.Get(data, "device_id")),
-            SessionId = JsonUtil.AsString(JsonUtil.Get(data, "session_id")),
-            CookieId = JsonUtil.AsString(JsonUtil.Get(data, "cookie_id")),
-            UserHid = UserHid(JsonUtil.Get(data, "user_hid")),
-            Domain = JsonUtil.AsString(JsonUtil.Get(data, "domain")),
-            PublicIp = IpObject(JsonUtil.Get(data, "public_ip")),
-            LocalIp = IpObject(JsonUtil.Get(data, "local_ip")),
-            ConnectionType = JsonUtil.AsString(JsonUtil.Get(data, "connection_type")),
-            Os = JsonUtil.AsString(JsonUtil.Get(data, "os")),
-            Browser = JsonUtil.AsString(JsonUtil.Get(data, "browser")),
-            DeviceType = JsonUtil.AsString(JsonUtil.Get(data, "device_type")),
+            RequestId = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.RequestId)),
+            VisitorId = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.VisitorId)),
+            DeviceId = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.DeviceId)),
+            SessionId = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.SessionId)),
+            CookieId = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.CookieId)),
+            UserHid = UserHid(Wire.Read<string>(data, WireIdentificationScoredData.UserHid)),
+            Domain = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.Domain)),
+            PublicIp = IpObject(Wire.Read<WireIpInfo>(data, WireIdentificationScoredData.PublicIp)),
+            LocalIp = IpObject(Wire.Read<WireIpInfo>(data, WireIdentificationScoredData.LocalIp)),
+            ConnectionType = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.ConnectionType)),
+            Os = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.Os)),
+            Browser = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.Browser)),
+            DeviceType = JsonUtil.AsString(Wire.Read<string>(data, WireIdentificationScoredData.DeviceType)),
             TrafficSource = new TrafficSource
             {
-                Channel = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "channel")),
-                ReferrerDomain = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "referrer_domain")),
-                LandingUrl = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "landing_url")),
-                ClickIdType = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "click_id_type")),
-                UtmSource = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "utm_source")),
-                UtmMedium = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "utm_medium")),
-                UtmCampaign = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "utm_campaign")),
-                UtmContent = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "utm_content")),
-                UtmTerm = JsonUtil.StringOrEmpty(JsonUtil.Get(traffic, "utm_term")),
+                Channel = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.Channel)),
+                ReferrerDomain = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.ReferrerDomain)),
+                LandingUrl = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.LandingUrl)),
+                ClickIdType = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.ClickIdType)),
+                UtmSource = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.UtmSource)),
+                UtmMedium = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.UtmMedium)),
+                UtmCampaign = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.UtmCampaign)),
+                UtmContent = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.UtmContent)),
+                UtmTerm = JsonUtil.StringOrEmpty(Wire.Read<string>(traffic, WireTrafficSource.UtmTerm)),
             },
-            RiskScore = JsonUtil.AsInt(JsonUtil.Get(data, "risk_score")),
+            RiskScore = JsonUtil.AsInt(Wire.Read<long>(data, WireIdentificationScoredData.RiskScore)),
             Signals = signals,
             DetectionFlags = BuildFlags(flags),
-            ObservedAt = Timestamps.ParseRfc3339(JsonUtil.StringOrNull(JsonUtil.Get(data, "observed_at"))) ?? DateTimeOffset.MinValue,
+            ObservedAt = Timestamps.ParseRfc3339(JsonUtil.StringOrNull(Wire.Read<string>(data, WireIdentificationScoredData.ObservedAt))) ?? DateTimeOffset.MinValue,
             Source = IdentificationSource.Webhook,
             Raw = data,
         };
@@ -363,8 +386,8 @@ internal static class Normalizer
         var obj = value ?? default;
         return new IpInfo
         {
-            Ip = Ip(JsonUtil.Get(obj, "ip")),
-            Country = JsonUtil.StringOrEmpty(JsonUtil.Get(obj, "country")),
+            Ip = Ip(Wire.Read<string>(obj, WireIpInfo.Ip)),
+            Country = JsonUtil.StringOrEmpty(Wire.Read<string>(obj, WireIpInfo.Country)),
         };
     }
 
