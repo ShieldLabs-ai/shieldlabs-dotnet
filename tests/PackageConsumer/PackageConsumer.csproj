@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NuGetAudit>false</NuGetAudit>
-    <SdkPackageVersion Condition="'$(SdkPackageVersion)' == ''">1.0.0</SdkPackageVersion>
+    <SdkPackageVersion Condition="'$(SdkPackageVersion)' == ''">1.0.1</SdkPackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ShieldLabs" Version="$(SdkPackageVersion)" />
