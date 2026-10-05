@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -162,10 +161,14 @@ public sealed class HistoryClient
         int? maxRetries = null,
         TimeSpan? attemptTimeout = null)
     {
+        var limitParameter = Wire.Parameter<long>(WireSearchHistoryParameters.Limit, limit);
+        var offsetParameter = Wire.Parameter<long>(WireSearchHistoryParameters.Offset, offset);
+        var typeParameter = Wire.Parameter<string>(WireSearchHistoryParameters.SearchType, wireType);
+        var valueParameter = Wire.Parameter<string>(WireSearchHistoryParameters.Value, segment);
         var url = _baseUrl
-            + "/api/v1/history/" + wireType + "/" + segment
-            + "?limit=" + limit.ToString(CultureInfo.InvariantCulture)
-            + "&offset=" + offset.ToString(CultureInfo.InvariantCulture);
+            + "/api/v1/history/" + typeParameter.Value + "/" + valueParameter.Value
+            + "?" + limitParameter.Key + "=" + limitParameter.Value
+            + "&" + offsetParameter.Key + "=" + offsetParameter.Value;
         var body = await _pipeline.GetAsync(new Uri(url, UriKind.Absolute), retryRateLimited, cancellationToken, maxRetries, attemptTimeout).ConfigureAwait(false);
         return ParsePage(body);
     }
@@ -188,7 +191,7 @@ public sealed class HistoryClient
         }
 
         var items = new List<Identification>();
-        if (JsonUtil.Get(root, "data") is JsonElement data && data.ValueKind == JsonValueKind.Array)
+        if (Wire.Read<WireArray<WireHistoryRow>>(root, WireSearchHistoryResponse.Data) is JsonElement data && data.ValueKind == JsonValueKind.Array)
         {
             foreach (var row in data.EnumerateArray())
             {
@@ -209,7 +212,7 @@ public sealed class HistoryClient
             }
         }
 
-        var totalElement = JsonUtil.Get(root, "total");
+        var totalElement = Wire.Read<long>(root, WireSearchHistoryResponse.Total);
         var total = totalElement is JsonElement t && t.ValueKind == JsonValueKind.Number
             ? JsonUtil.AsLong(t, items.Count)
             : items.Count;

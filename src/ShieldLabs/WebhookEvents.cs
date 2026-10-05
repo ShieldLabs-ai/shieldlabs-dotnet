@@ -107,9 +107,9 @@ public static class WebhookEvents
 
     private static WebhookEvent ParseEnvelope(JsonElement root)
     {
-        var eventType = JsonUtil.StringOrNull(JsonUtil.Get(root, "event_type")) ?? string.Empty;
-        var schemaVersion = JsonUtil.StringOrNull(JsonUtil.Get(root, "schema_version")) ?? string.Empty;
-        var createdAt = Timestamps.ParseRfc3339(JsonUtil.StringOrNull(JsonUtil.Get(root, "created_at"))) ?? DateTimeOffset.MinValue;
+        var eventType = JsonUtil.StringOrNull(Wire.Read<string>(root, WireIdentificationScoredBody.EventType)) ?? string.Empty;
+        var schemaVersion = JsonUtil.StringOrNull(Wire.Read<string>(root, WireIdentificationScoredBody.SchemaVersion)) ?? string.Empty;
+        var createdAt = Timestamps.ParseRfc3339(JsonUtil.StringOrNull(Wire.Read<string>(root, WireIdentificationScoredBody.CreatedAt))) ?? DateTimeOffset.MinValue;
 
         if (schemaVersion != SchemaVersion && Interlocked.Exchange(ref _schemaWarningIssued, 1) == 0)
         {
@@ -119,7 +119,7 @@ public static class WebhookEvents
         switch (eventType)
         {
             case WebhookEventTypes.IdentificationScored:
-                if (JsonUtil.Get(root, "data") is not JsonElement data || data.ValueKind != JsonValueKind.Object)
+                if (Wire.Read<WireIdentificationScoredData>(root, WireIdentificationScoredBody.Data) is not JsonElement data || data.ValueKind != JsonValueKind.Object)
                 {
                     throw new WebhookParseException("The identification.scored event has no data object.");
                 }

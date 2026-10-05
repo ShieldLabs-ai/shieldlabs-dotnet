@@ -4,6 +4,7 @@ obj/
 artifacts/
 *.nupkg
 *.snupkg
+__pycache__/
 
 # Test output and coverage
 TestResults/

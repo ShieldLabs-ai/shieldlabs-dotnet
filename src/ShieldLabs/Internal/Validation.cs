@@ -29,13 +29,13 @@ internal static class Validation
     /// <summary>The History API path segment for a lookup type.</summary>
     internal static string WireName(LookupType type) => type switch
     {
-        LookupType.Ip => "ip",
-        LookupType.UserHid => "user_hid",
-        LookupType.VisitorId => "visitor_id",
-        LookupType.RequestId => "request_id",
-        LookupType.DeviceId => "device_id",
-        LookupType.SessionId => "session_id",
-        LookupType.CookieId => "cookie_id",
+        LookupType.Ip => WireSearchHistoryValues.SearchTypeIp,
+        LookupType.UserHid => WireSearchHistoryValues.SearchTypeUserHid,
+        LookupType.VisitorId => WireSearchHistoryValues.SearchTypeVisitorId,
+        LookupType.RequestId => WireSearchHistoryValues.SearchTypeRequestId,
+        LookupType.DeviceId => WireSearchHistoryValues.SearchTypeDeviceId,
+        LookupType.SessionId => WireSearchHistoryValues.SearchTypeSessionId,
+        LookupType.CookieId => WireSearchHistoryValues.SearchTypeCookieId,
         _ => throw new ValidationException(
             $"Unknown lookup type {(int)type}. Use one of: ip, user_hid, visitor_id, request_id, device_id, session_id, cookie_id."),
     };

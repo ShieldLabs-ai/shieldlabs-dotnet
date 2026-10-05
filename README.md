@@ -416,13 +416,30 @@ Documentation: [docs.shieldlabs.ai](https://docs.shieldlabs.ai). Support: [conta
 
 ## Development
 
-Refresh the generated client when the API description changes. This does not replace the supported library in this repository.
+The supported SDK reads responses through typed fields generated from the bundled OpenAPI
+description. History rows and totals, profile fields and headers, webhook data and search
+parameters are compiler-checked against that contract. Renaming or changing the type of a
+consumed field fails the build until the reader is updated.
+Generation also rejects changed operation routes, moved parameters and new required parameters
+until the supported transport is updated. New optional parameters are not sent by default.
+
+These internal wire types retain the original JSON; the existing normalizer still handles
+unknown strings and fields, nulls and historical malformed values. Public models, retries,
+polling and signature verification are unchanged. No generated HTTP transport is used.
 
 ```bash
+python3 -m pip install -r scripts/requirements.txt
 ./sync.sh      # download the current OpenAPI description into resources/
-./generate.sh  # rebuild generated/ from that file
+./generate.sh  # rebuild the SDK wire contract and the separate generated client
+python3 scripts/generate-wire.py --check
+python3 scripts/check-wire-drift.py  # compile incompatible mutations, then an additive field
 ```
 
+`src/ShieldLabs/Internal/WireContract.g.cs` is the generated layer compiled into the supported
+package. `generated/` remains a separate stock client reference, not a package dependency: its
+strict deserializers and .NET 8-only target do not preserve this SDK's tolerant parsing and
+.NET Standard support. `python3 scripts/generate-wire.py` rebuilds only the supported wire
+layer without Docker. Generation needs Python 3.10+ and the pinned PyYAML dependency.
 
 Requirements: the .NET 8 SDK (or Docker).
 
@@ -430,6 +447,7 @@ Requirements: the .NET 8 SDK (or Docker).
 dotnet build -c Release -warnaserror
 dotnet test -c Release --no-build
 dotnet pack src/ShieldLabs -c Release -o artifacts
+python3 scripts/check-package.py
 ```
 
 The same with Docker:

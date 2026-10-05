@@ -34,11 +34,20 @@ jobs:
       - name: Build
         run: dotnet build -c Release -warnaserror
 
+      - name: Verify generated wire contract and incompatible schema checks
+        run: |
+          python3 -m pip install -r scripts/requirements.txt
+          python3 scripts/generate-wire.py --check
+          python3 scripts/check-wire-drift.py
+
       - name: Test
         run: dotnet test -c Release --no-build
 
       - name: Pack
         run: dotnet pack src/ShieldLabs -c Release --no-build -o artifacts
+
+      - name: Test installed package in a fresh consumer
+        run: python3 scripts/check-package.py
 
       - name: Upload package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
