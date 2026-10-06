@@ -463,3 +463,12 @@ passes. See [CONTRIBUTING.md](https://github.com/ShieldLabs-ai/shieldlabs-dotnet
 ## License
 
 [MIT](https://github.com/ShieldLabs-ai/shieldlabs-dotnet/blob/main/LICENSE). Copyright (c) 2026 ShieldLabs Inc.
+
+### Bot / Agent attribution
+
+`Identification.ClientIdentity` is optional stored server attribution. `Claims` and
+`Verified` describe separate facts: verification of a provider does not verify
+a claimed agent name or AI mode. Check each attribution's `Subject` and evidence.
+Strings and raw unknown fields remain open for future values; missing attribution
+is absent. This field never changes `RiskScore`. The legacy `search_bot` flag is
+an allowlisted User-Agent signal, not cryptographic identity verification.

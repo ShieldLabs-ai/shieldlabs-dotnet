@@ -111,6 +111,11 @@ public sealed class Identification
     [JsonConverter(typeof(UtcTimestampConverter))]
     public DateTimeOffset ObservedAt { get; init; }
 
+    /// <summary>Optional stored server attribution, independent of Risk Score.</summary>
+    [JsonPropertyName("client_identity")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ClientIdentity? ClientIdentity => ShieldLabs.ClientIdentity.FromRaw(Raw);
+
     /// <summary>Which surface this identification was read from.</summary>
     [JsonPropertyName("source")]
     public IdentificationSource Source { get; init; }
